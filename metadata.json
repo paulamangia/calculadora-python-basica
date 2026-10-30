@@ -1,0 +1,6 @@
+{
+  "name": "Aprenda Python: Calculadora Simples",
+  "description": "Guia interativo e código organizado para criar uma calculadora básica em Python com explicações detalhadas de cada componente.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
