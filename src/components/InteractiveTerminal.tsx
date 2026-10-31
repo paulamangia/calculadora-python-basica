@@ -10,9 +10,9 @@ export const InteractiveTerminal: React.FC = () => {
   const [terminalLogs, setTerminalLogs] = useState<Array<{ text: string; type: 'cmd' | 'output' | 'input' | 'result' | 'error' }>>([
     { text: '$ python calculadora_simples.py', type: 'cmd' },
     { text: '--- Calculadora Simples em Python ---', type: 'output' },
-    { text: 'Operações disponíveis: (+, -, *, /)', type: 'output' },
+    { text: 'Operações disponíveis: (+, -, *, /, %)', type: 'output' },
     { text: 'Digite o primeiro número: 15.0', type: 'input' },
-    { text: 'Digite a operação (+, -, *, /): +', type: 'input' },
+    { text: 'Digite a operação (+, -, *, /, %): +', type: 'input' },
     { text: 'Digite o segundo número: 3.0', type: 'input' },
     { text: 'Resultado: 15.0 + 3.0 = 18.0', type: 'result' },
   ]);
@@ -45,7 +45,7 @@ export const InteractiveTerminal: React.FC = () => {
       { text: '$ python calculadora_simples.py', type: 'cmd' },
       { text: '--- Calculadora Simples em Python ---', type: 'output' },
       { text: `Digite o primeiro número: ${val1Str}`, type: 'input' },
-      { text: `Digite a operação (+, -, *, /): ${opStr}`, type: 'input' },
+      { text: `Digite a operação (+, -, *, /, %): ${opStr}`, type: 'input' },
       { text: `Digite o segundo número: ${val2Str}`, type: 'input' },
     ];
 
@@ -66,9 +66,9 @@ export const InteractiveTerminal: React.FC = () => {
       return;
     }
 
-    if (!['+', '-', '*', '/'].includes(opStr)) {
+    if (!['+', '-', '*', '/', '%'].includes(opStr)) {
       logs.push({
-        text: 'Erro: Operação inválida! Escolha apenas +, -, * ou /.',
+        text: 'Erro: Operação inválida! Escolha apenas +, -, *, / ou %.',
         type: 'error',
       });
       setTerminalLogs(logs);
@@ -78,7 +78,7 @@ export const InteractiveTerminal: React.FC = () => {
         n2: n2Parsed,
         result: null,
         status: 'invalid_op',
-        stepExplanation: 'Caiu no bloco `else:` final porque a operação digitada não coincide com +, -, * ou /.',
+        stepExplanation: 'Caiu no bloco `else:` final porque a operação digitada não coincide com +, -, *, / ou %.',
       });
       return;
     }
@@ -102,6 +102,8 @@ export const InteractiveTerminal: React.FC = () => {
 
     let res = 0;
     let logicBranch = '';
+    let resultMessage = '';
+
     switch (opStr) {
       case '+':
         res = n1Parsed + n2Parsed;
@@ -119,13 +121,18 @@ export const InteractiveTerminal: React.FC = () => {
         res = n1Parsed / n2Parsed;
         logicBranch = 'Passou pela checagem de zero e avaliou `elif operacao == "/":`';
         break;
+      case '%':
+        res = (n1Parsed * n2Parsed) / 100;
+        logicBranch = 'Avaliou `elif operacao == "%":` calculando porcentagem';
+        resultMessage = `Resultado: ${n1Parsed}% de ${n2Parsed} = `;
+        break;
     }
 
     // Round nicely if floating point issue occurs (e.g. 0.1 + 0.2)
     const formattedRes = Math.round(res * 10000000) / 10000000;
 
     logs.push({
-      text: `Resultado: ${n1Parsed} ${opStr} ${n2Parsed} = ${formattedRes}`,
+      text: resultMessage ? `${resultMessage}${formattedRes}` : `Resultado: ${n1Parsed} ${opStr} ${n2Parsed} = ${formattedRes}`,
       type: 'result',
     });
 
@@ -160,11 +167,29 @@ export const InteractiveTerminal: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-800">
-        {/* Controls Deck (Left 5 cols) */}
-        <div className="lg:col-span-5 p-5 space-y-5 bg-slate-950/40">
-          {/* Input Controls Form */}
-          <div className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12">
+        {/* Controls Panel (Left 5 cols) */}
+        <div className="lg:col-span-5 p-5 border-b lg:border-b-0 lg:border-r border-slate-800 space-y-4 bg-slate-900/50">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              Dados de Entrada (Inputs)
+            </span>
+            <button
+              onClick={() => {
+                setNum1('15');
+                setOperacao('+');
+                setNum2('3');
+                runCalculation('15', '+', '3');
+              }}
+              className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+              title="Restaurar valores padrão"
+            >
+              <RotateCcw className="w-3 h-3" />
+              Resetar
+            </button>
+          </div>
+
+          <div className="space-y-3">
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Primeiro Número (num1)
@@ -173,7 +198,7 @@ export const InteractiveTerminal: React.FC = () => {
                 type="text"
                 value={num1}
                 onChange={(e) => setNum1(e.target.value)}
-                placeholder="Ex: 10 ou 15.5"
+                placeholder="Ex: 10 ou 3.5"
                 className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm font-mono text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
               />
             </div>
@@ -182,12 +207,13 @@ export const InteractiveTerminal: React.FC = () => {
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Operação Matemática (operacao)
               </label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-5 gap-1.5">
                 {[
-                  { symbol: '+', label: 'Adição' },
+                  { symbol: '+', label: 'Soma' },
                   { symbol: '-', label: 'Subtração' },
-                  { symbol: '*', label: 'Multiplicação' },
+                  { symbol: '*', label: 'Mult.' },
                   { symbol: '/', label: 'Divisão' },
+                  { symbol: '%', label: 'Porcent.' },
                 ].map((item) => (
                   <button
                     key={item.symbol}
@@ -247,6 +273,12 @@ export const InteractiveTerminal: React.FC = () => {
                 10 ÷ 0 (Divisão por zero)
               </button>
               <button
+                onClick={() => handlePreset('15', '%', '200')}
+                className="px-2.5 py-1 text-[11px] bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 rounded"
+              >
+                15% de 200 (Porcentagem)
+              </button>
+              <button
                 onClick={() => handlePreset('4.5', '+', '2.3')}
                 className="px-2.5 py-1 text-[11px] bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 rounded"
               >
@@ -274,60 +306,86 @@ export const InteractiveTerminal: React.FC = () => {
               <span className="ml-2 text-[10px] text-slate-500">bash / python terminal</span>
             </div>
 
-            <div className="space-y-1.5">
-              {terminalLogs.map((log, i) => (
-                <div key={i} className="flex items-start gap-2">
+            {/* Output lines */}
+            <div className="space-y-1">
+              {terminalLogs.map((log, idx) => (
+                <div key={idx} className="flex items-start gap-2">
                   {log.type === 'cmd' && (
-                    <span className="text-emerald-400 font-semibold">{log.text}</span>
-                  )}
-                  {log.type === 'output' && (
-                    <span className="text-slate-400">{log.text}</span>
+                    <span className="text-emerald-400 font-bold select-none">&gt;</span>
                   )}
                   {log.type === 'input' && (
-                    <span className="text-sky-300">{log.text}</span>
+                    <span className="text-sky-400 font-bold select-none">?</span>
                   )}
                   {log.type === 'result' && (
-                    <span className="text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 inline-block">
-                      {log.text}
-                    </span>
+                    <span className="text-emerald-400 select-none">✔</span>
                   )}
                   {log.type === 'error' && (
-                    <span className="text-rose-400 font-semibold bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30 inline-block">
-                      {log.text}
-                    </span>
+                    <span className="text-rose-400 select-none">✖</span>
                   )}
+
+                  <span
+                    className={`
+                      ${log.type === 'cmd' ? 'text-slate-300 font-semibold' : ''}
+                      ${log.type === 'output' ? 'text-slate-400' : ''}
+                      ${log.type === 'input' ? 'text-sky-200' : ''}
+                      ${log.type === 'result' ? 'text-emerald-300 font-semibold' : ''}
+                      ${log.type === 'error' ? 'text-rose-300 font-medium' : ''}
+                    `}
+                  >
+                    {log.text}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Memory & Logic Flow Inspector */}
-          <div className="p-4 bg-slate-900/80 border-t border-slate-800 text-xs">
-            <div className="flex items-center gap-2 mb-2 text-slate-400 font-semibold">
-              <Cpu className="w-3.5 h-3.5 text-amber-400" />
-              <span>O que aconteceu na memória do Python:</span>
+          {/* Python Internal Execution Trace */}
+          <div className="p-4 bg-slate-900/90 border-t border-slate-800">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300">
+                <Cpu className="w-3.5 h-3.5 text-amber-400" />
+                <span>O que aconteceu na memória do Python:</span>
+              </div>
+              <div className="flex items-center gap-1">
+                {lastTrace.status === 'success' && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <CheckCircle className="w-2.5 h-2.5" /> Execução OK
+                  </span>
+                )}
+                {lastTrace.status === 'division_by_zero' && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                    <AlertTriangle className="w-2.5 h-2.5" /> Tratamento de Erro
+                  </span>
+                )}
+                {(lastTrace.status === 'invalid_op' || lastTrace.status === 'invalid_number') && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <AlertTriangle className="w-2.5 h-2.5" /> Entrada Inválida
+                  </span>
+                )}
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2 font-mono text-[11px]">
-              <div className="p-2 bg-slate-950 rounded border border-slate-800">
-                <span className="text-slate-500 block">num1 (float)</span>
-                <span className="text-sky-300 font-semibold">{lastTrace.n1 !== null ? lastTrace.n1 : 'None'}</span>
+            {/* Visual Variables Box */}
+            <div className="grid grid-cols-4 gap-2 mb-2 text-center font-mono text-[11px]">
+              <div className="bg-slate-950 p-2 rounded border border-slate-800">
+                <span className="text-[9px] text-slate-500 uppercase block">num1 (float)</span>
+                <span className="text-sky-300 font-bold">{lastTrace.n1 ?? '—'}</span>
               </div>
-              <div className="p-2 bg-slate-950 rounded border border-slate-800">
-                <span className="text-slate-500 block">operacao (str)</span>
-                <span className="text-amber-300 font-semibold">"{lastTrace.op}"</span>
+              <div className="bg-slate-950 p-2 rounded border border-slate-800">
+                <span className="text-[9px] text-slate-500 uppercase block">operacao (str)</span>
+                <span className="text-amber-300 font-bold">'{lastTrace.op}'</span>
               </div>
-              <div className="p-2 bg-slate-950 rounded border border-slate-800">
-                <span className="text-slate-500 block">num2 (float)</span>
-                <span className="text-sky-300 font-semibold">{lastTrace.n2 !== null ? lastTrace.n2 : 'None'}</span>
+              <div className="bg-slate-950 p-2 rounded border border-slate-800">
+                <span className="text-[9px] text-slate-500 uppercase block">num2 (float)</span>
+                <span className="text-sky-300 font-bold">{lastTrace.n2 ?? '—'}</span>
               </div>
-              <div className="p-2 bg-slate-950 rounded border border-slate-800">
-                <span className="text-slate-500 block">resultado</span>
-                <span className="text-emerald-400 font-semibold">{lastTrace.result !== null ? lastTrace.result : 'Erro'}</span>
+              <div className="bg-slate-950 p-2 rounded border border-slate-800">
+                <span className="text-[9px] text-slate-500 uppercase block">resultado</span>
+                <span className="text-emerald-300 font-bold">{lastTrace.result ?? '—'}</span>
               </div>
             </div>
 
-            <p className="text-[11px] text-slate-300 leading-normal flex items-start gap-1.5 pt-1">
+            <p className="text-[11px] text-slate-400 flex items-start gap-1.5 leading-snug">
               <ArrowRight className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
               <span>{lastTrace.stepExplanation}</span>
             </p>

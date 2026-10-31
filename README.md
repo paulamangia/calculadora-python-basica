@@ -1,6 +1,6 @@
 # 🧮 Calculadora Básica em Python
 
-> Calculadora interativa desenvolvida em Python para praticar as quatro operações matemáticas básicas, leitura de dados e estruturas de decisão.
+> Calculadora interativa desenvolvida em Python para praticar as operações matemáticas básicas, leitura de dados e estruturas de decisão.
 
 ![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -10,13 +10,14 @@
 
 ## 📌 Sobre o Projeto
 
-Este projeto foi desenvolvido como parte dos meus estudos iniciais na linguagem **Python**. O objetivo é criar uma ferramenta funcional de terminal que calcula soma, subtração, multiplicação e divisão, aplicando boas práticas de programação e validações defensivas.
+Este projeto foi desenvolvido como parte dos meus estudos iniciais na linguagem **Python**. O objetivo é criar uma ferramenta funcional de terminal que calcula soma, subtração, multiplicação, divisão e porcentagem, aplicando boas práticas de programação e validações defensivas.
 
 ### ✨ Funcionalidades
 - ➕ **Adição** (`+`): soma de números inteiros ou decimais.
 - ➖ **Subtração** (`-`): diferença entre dois números.
 - ✖️ **Multiplicação** (`*`): produto entre dois fatores.
 - ➗ **Divisão** (`/`): quociente exato com **proteção contra divisão por zero**.
+- 📊 **Porcentagem** (`%`): cálculo percentual (ex: `15` % de `200` = `30.0`).
 - 🛡️ **Validação de Operação**: mensagem de erro amigável caso uma opção inválida seja digitada.
 
 ---
@@ -39,4 +40,7 @@ Ter o Python 3 instalado ([python.org](https://www.python.org/downloads/)).
 ### Passo a passo
 1. Clone este repositório ou baixe os arquivos:
 ```bash
-git clone https://github.com/SEU-USUARIO/calculadora-python-basica.git
+git clone https://github.com/paulamangia/calculadora-python-basica.git
+cd calculadora-python-basica
+python calculadora.py
+```
