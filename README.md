@@ -93,4 +93,4 @@ calculadora-python-basica/
 
 Este projeto está sob a licença [MIT](https://opensource.org/licenses/MIT). Sinta-se livre para estudar, modificar e compartilhar!
 
-Feito com dedicação por [Paula](https://github.com/) 🚀
+Feito com dedicação por [Paula Mangia](https://github.com/paulamangia) 🚀
