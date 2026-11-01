@@ -1,46 +1,42 @@
-# 🧮 Calculadora Básica em Python
+# 🧮 Calculadora em Python
 
-> Calculadora interativa desenvolvida em Python para praticar as operações matemáticas básicas, leitura de dados e estruturas de decisão.
+> Calculadora desenvolvida em Python com suporte às operações básicas e cálculo de porcentagem.
 
 ![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Status](https://img.shields.io/badge/status-concluído-brightgreen.svg)
 
 ---
 
-## 📌 Sobre o Projeto
+## ✨ Funcionalidades
 
-Este projeto foi desenvolvido como parte dos meus estudos iniciais na linguagem **Python**. O objetivo é criar uma ferramenta funcional de terminal que calcula soma, subtração, multiplicação, divisão e porcentagem, aplicando boas práticas de programação e validações defensivas.
-
-### ✨ Funcionalidades
-- ➕ **Adição** (`+`): soma de números inteiros ou decimais.
-- ➖ **Subtração** (`-`): diferença entre dois números.
-- ✖️ **Multiplicação** (`*`): produto entre dois fatores.
-- ➗ **Divisão** (`/`): quociente exato com **proteção contra divisão por zero**.
-- 📊 **Porcentagem** (`%`): cálculo percentual (ex: `15` % de `200` = `30.0`).
-- 🛡️ **Validação de Operação**: mensagem de erro amigável caso uma opção inválida seja digitada.
+- ➕ **Adição** (`+`)
+- ➖ **Subtração** (`-`)
+- ✖️ **Multiplicação** (`*`)
+- ➗ **Divisão** (`/`) com proteção contra divisão por zero
+- 📊 **Porcentagem** (`%`)
 
 ---
 
-## 🧠 Conceitos Aplicados
-
-- **`input()`**: captura de dados digitados pelo usuário.
-- **`float()`**: conversão do texto recebido em número decimal.
-- **`if / elif / else`**: estruturas condicionais para tomada de decisão.
-- **Prevenção de Falhas**: validação antes da divisão para evitar o `ZeroDivisionError`.
-- **f-strings**: formatação moderna de textos com variáveis (`f"Resultado: {resultado}"`).
-
----
-
-## 🚀 Como Executar Localmente
+## 🚀 Como Executar
 
 ### Pré-requisito
-Ter o Python 3 instalado ([python.org](https://www.python.org/downloads/)).
+Python 3 instalado ([python.org](https://www.python.org/downloads/)).
 
-### Passo a passo
-1. Clone este repositório ou baixe os arquivos:
+### Execução no Terminal
 ```bash
-git clone https://github.com/paulamangia/calculadora-python-basica.git
-cd calculadora-python-basica
 python calculadora.py
+```
+
+### Exemplo de Uso
+```text
+========================================
+     CALCULADORA BÁSICA EM PYTHON       
+========================================
+Operações: (+) Soma  (-) Subtração  (*) Multiplicação  (/) Divisão  (%) Porcentagem
+
+Digite o primeiro número: 15
+Digite a operação (+, -, *, /, %): %
+Digite o segundo número: 200
+
+✅ Resultado: 15.0% de 200.0 = 30.0
 ```
